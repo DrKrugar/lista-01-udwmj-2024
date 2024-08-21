@@ -1,0 +1,56 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
+    $target_dir = "uploads/";
+    
+    
+    $target_file = $target_dir . basename($_FILES["arquivo"]["name"]);
+    
+    
+    $uploadOk = 1;
+    
+    
+    $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    
+    
+    $check = getimagesize($_FILES["arquivo"]["tmp_name"]);
+    if ($check !== false) {
+        echo "Arquivo é uma imagem - " . $check["mime"] . ".<br>";
+        $uploadOk = 1;
+    } else {
+        echo "Arquivo não é uma imagem.<br>";
+        $uploadOk = 0;
+    }
+
+    
+    if (file_exists($target_file)) {
+        echo "Desculpe, o arquivo já existe.<br>";
+        $uploadOk = 0;
+    }
+
+    
+    if ($_FILES["arquivo"]["size"] > 5000000) {
+        echo "Desculpe, o arquivo é muito grande.<br>";
+        $uploadOk = 0;
+    }
+
+    
+    if($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg"
+    && $fileType != "gif" && $fileType != "pdf") {
+        echo "Desculpe, apenas arquivos JPG, JPEG, PNG, GIF e PDF são permitidos.<br>";
+        $uploadOk = 0;
+    }
+
+    
+    if ($uploadOk == 0) {
+        echo "Desculpe, seu arquivo não foi enviado.<br>";
+    } else {
+        
+        if (move_uploaded_file($_FILES["arquivo"]["tmp_name"], $target_file)) {
+            echo "O arquivo " . htmlspecialchars(basename($_FILES["arquivo"]["name"])) . " foi enviado com sucesso.<br>";
+        } else {
+            echo "Desculpe, ocorreu um erro ao enviar seu arquivo.<br>";
+        }
+    }
+}
+?>
